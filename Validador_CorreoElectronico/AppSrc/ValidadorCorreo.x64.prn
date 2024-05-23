@@ -1,5 +1,5 @@
-Compiling Program: C:\Users\Usuario\Desktop\Trabajo Jaime\Validador_CorreoElectronico\AppSrc\ValidadorCorreo.src
-Memory Available: 51498803200
+Compiling Program: C:\Users\Usuario\Documents\GitHub\DataControl_Repository\Validador_CorreoElectronico\AppSrc\ValidadorCorreo.src
+Memory Available: 51166695424
 1>//**************************************************************
 1>// WindowsProject.tpl for Spanish translated by Moose Software (www.moose-software.com) 
 1>// 28/10/2008 revised for VDF 14.1 by Moose Software  
@@ -1461,7 +1461,7 @@ Including file: CryptographerConstants.pkg    (C:\Program Files\DataFlex 24.0\Pk
 74229>>>    //
 74229>>>    // Set psEncryptPassword to "JchUAo7W@r.b{<Yk~OONi0nq=sMi[*Rn[A-`Vo)q"
 74229>>>    //  
-Including file: LoginEncryptionKey.inc    (C:\Users\Usuario\Desktop\Trabajo Jaime\Validador_CorreoElectronico\AppSrc\LoginEncryptionKey.inc)
+Including file: LoginEncryptionKey.inc    (C:\Users\Usuario\Documents\GitHub\DataControl_Repository\Validador_CorreoElectronico\AppSrc\LoginEncryptionKey.inc)
 74229>>>>// Studio generated login encryption key
 74229>>>>Set psEncryptPassword to "7jAc)zDzk:r8jAe^uc/AeY_8:(&LT2dUadN[G=+>"
 74230>>>>
@@ -3445,199 +3445,599 @@ Including file: MSSqldrv.pkg    (C:\Program Files\DataFlex 24.0\Pkg\MSSqldrv.pkg
 75603>>>End_Procedure
 75604>>>
 75604>        Use ValidadorCorreo.vw
-Including file: ValidadorCorreo.vw    (C:\Users\Usuario\Desktop\Trabajo Jaime\Validador_CorreoElectronico\AppSrc\ValidadorCorreo.vw)
+Including file: ValidadorCorreo.vw    (C:\Users\Usuario\Documents\GitHub\DataControl_Repository\Validador_CorreoElectronico\AppSrc\ValidadorCorreo.vw)
 75604>>>Use Windows.pkg
 75604>>>Use DFClient.pkg
 75604>>>
 75604>>>Use ValidacionCorreo.pkg
-Including file: ValidacionCorreo.pkg    (C:\Users\Usuario\Desktop\Trabajo Jaime\Validador_CorreoElectronico\AppSrc\ValidacionCorreo.pkg)
+Including file: ValidacionCorreo.pkg    (C:\Users\Usuario\Documents\GitHub\DataControl_Repository\Validador_CorreoElectronico\AppSrc\ValidacionCorreo.pkg)
 75604>>>>>Define cSimbolos for "!#$%&'*/\=?^+, `{|}~[]"
 75604>>>>>
-75604>>>>>Function ValidacionCorreo String sCorreo Returns Boolean
-75607>>>>>    
-75607>>>>>    Boolean bRet
-75607>>>>>
-75607>>>>>    // Comprobamos que se haya introducido algun valor
-75607>>>>>    If (Length(sCorreo) = 0) Begin
-75609>>>>>        Send Info_Box "No se ha ingresado correo electronico" "Error"
-75610>>>>>        Function_Return False
-75611>>>>>    End
-75611>>>>>>
-75611>>>>>    
-75611>>>>>    If (Length(sCorreo) > 256 and (not(Length(sCorreo) = 0))) Begin
-75613>>>>>        Send Info_Box "El correo electronico introducido tiene mas de 256 caracteres" "Error"
-75614>>>>>        Function_Return False
-75615>>>>>    End 
-75615>>>>>>
-75615>>>>>    
-75615>>>>>    Get IsEmail sCorreo to bRet
-75616>>>>>    If (not(bRet)) Begin
-75618>>>>>        Send Info_Box "El correo no tiene un formato correcto" "Error"
-75619>>>>>    End
-75619>>>>>>
-75619>>>>>    Else Begin
-75620>>>>>        Send Info_Box "El correo tiene un formato correcto" ""
-75621>>>>>    End
-75621>>>>>>
-75621>>>>>
-75621>>>>>    Function_Return bRet
-75622>>>>>End_Function
-75623>>>>>
-75623>>>>>
-75623>>>>>
-75623>>>>>
-75623>>>>>// Funcion que comprueba los distintos requisitos del formato de un correo electronico
-75623>>>>>Function IsEmail String sCorreo Returns Boolean
-75626>>>>>    
-75626>>>>>    Integer iCount iCountAux iLengthString
-75626>>>>>    String sCaracter
-75626>>>>>    Boolean bRet
-75626>>>>>    
-75626>>>>>    Move (Length(sCorreo)) to iLengthString
-75627>>>>>    //Comprobamos que el primer caracter no sea un simbolo valido en vez de numero o letra
-75627>>>>>    If ((Left(sCorreo, 1) = ".") or (Left(sCorreo, 1) = "-") or (Left(sCorreo, 1) = "_") or (Left(sCorreo, 1) = "@")) Begin
-75629>>>>>         Send Info_Box "El correo no puede comenzar por un simbolo" "Error"
-75630>>>>>        Function_Return False
-75631>>>>>    End
-75631>>>>>>
-75631>>>>>    
-75631>>>>>    For iCount from 1 to (iLengthString)
-75637>>>>>>
-75637>>>>>        Move (Mid(sCorreo,1,iCount)) to sCaracter
-75638>>>>>        
-75638>>>>>        // Comprobamos que el caracter no sea un simbolo prohibido
-75638>>>>>        Get ComprobarSimbolos sCaracter to bRet
-75639>>>>>        If (bRet) Begin
-75641>>>>>             Send Info_Box "Se ha ingresado un simbolo no permitido (simbolos permitidos . - _)" "Error"
-75642>>>>>            Function_Return False
-75643>>>>>        End
-75643>>>>>>
-75643>>>>>        
-75643>>>>>        // Comprobamos que no haya 2 puntos juntos
-75643>>>>>        If ((sCaracter = ".") and (Mid(sCorreo,1,iCount+1) = ".")) Begin
-75645>>>>>             Send Info_Box "El correo no puede contener dos puntos seguidos" "Error"
-75646>>>>>            Function_Return False
-75647>>>>>        End
-75647>>>>>>
-75647>>>>>        
-75647>>>>>        // Comprobamos que antes de la @ haya un minimo de caracteres y un maximo
-75647>>>>>        If ((sCaracter = "@") and (iCount > 1) and (iCount < 66)) Begin
-75649>>>>>            Move (iCountAux+1) to iCountAux
-75650>>>>>        End
-75650>>>>>>
-75650>>>>>        
-75650>>>>>        // Comprobamos si (desde la derecha) la 3, 4 o 5 posicion es un .
-75650>>>>>        If (not((Mid(sCorreo,1,iLengthString-2) = ".") or (Mid(sCorreo,1,iLengthString-3) = ".") or (Mid(sCorreo,1,iLengthString-4) = "."))) Begin
-75652>>>>>            Send Info_Box "Tras el '.' de dominio, solo se podran escribir entre 2 y 4 caracteres" "Error"
-75653>>>>>            Function_Return False
-75654>>>>>        End
-75654>>>>>>
-75654>>>>>    Loop
-75655>>>>>>
-75655>>>>>    
-75655>>>>>    // Comprobamos que solo haya una @ en el correo
-75655>>>>>    If (iCountAux = 1) Begin
-75657>>>>>        Function_Return True
-75658>>>>>    End 
-75658>>>>>>
-75658>>>>>    Else If (iCountAux > 1) Begin 
-75661>>>>>         Send Info_Box "No puede introducir 2 '@'" "Error"
-75662>>>>>    End
-75662>>>>>>
-75662>>>>>    
-75662>>>>>End_Function
-75663>>>>>
-75663>>>>>// Comprobador de simbolos permitidos
-75663>>>>>Function ComprobarSimbolos String sCaracter Returns Boolean
-75666>>>>>    Integer iCount
-75666>>>>>    String sSimbolosProhibidos
-75666>>>>>    
-75666>>>>>    For iCount from 1 to (Length(cSimbolos))
-75672>>>>>>
-75672>>>>>        Move (Mid(cSimbolos,1,iCount)) to sSimbolosProhibidos
-75673>>>>>        If (sCaracter = sSimbolosProhibidos) Begin
-75675>>>>>            Function_Return True
-75676>>>>>        End
-75676>>>>>>
-75676>>>>>    Loop
-75677>>>>>>
-75677>>>>>End_Function
-75678>>>
-75678>>>Deferred_View Activate_oValidadorCorreo for ;Object oValidadorCorreo is a dbView
-75703>>>
-75703>>>    Set Border_Style to Border_Thick
-75704>>>    Set Size to 200 300
-75705>>>    Set Location to 2 2
-75706>>>    Set Label to "ValidadorCorreo"
-75707>>>
-75707>>>    Object oForm1 is a Form
-75709>>>        Set Size to 12 224
-75710>>>        Set Location to 43 7
-75711>>>        Set psPlaceHolder to "Introduzca el correo electronico a validar"
-75712>>>        // OnChange is called on every changed character
-75712>>>    //    Procedure OnChange
-75712>>>    //        String sValue
-75712>>>    //    
-75712>>>    //        Get Value to sValue
-75712>>>    //    End_Procedure
-75712>>>    
-75712>>>    End_Object
-75713>>>
-75713>>>    Object oButton1 is a Button
-75715>>>        Set Location to 42 237
-75716>>>        Set Label to 'Validar'
-75717>>>    
-75717>>>        // fires when the button is clicked
-75717>>>        Procedure OnClick
-75720>>>            String sValue
-75720>>>            Boolean  bRet
-75720>>>            
-75720>>>            Get Value of oForm1 to sValue
-75721>>>            Get ValidacionCorreo sValue to bRet
-75722>>>            
-75722>>>            Set Label of oTextBox1 to ("Correo electronico: " + sValue)
-75723>>>            If (bRet) Begin
-75725>>>                Set Color of oTextBox1 to clGreen
-75726>>>            End
-75726>>>>
-75726>>>            Else Begin 
-75727>>>                Set Color of oTextBox1 to clRed
-75728>>>            End
-75728>>>>
-75728>>>        End_Procedure
-75729>>>    
-75729>>>    End_Object
-75730>>>
-75730>>>    Object oTextBox1 is a TextBox
-75732>>>        Set Size to 10 34
-75733>>>        Set Location to 92 10
-75734>>>        Set Label to 'Correo electronico: '
-75735>>>    End_Object
-75736>>>
-75736>>>Cd_End_Object
-75738>>>>
-75738>
-75738>        Procedure Activate_About
-75741>            Send DoAbout "" "" "" "" ""
-75742>        End_Procedure
-75743>
-75743>    End_Object
-75744>
-75744>End_Object
-75745>
-75745>Start_UI
-75746>
-75746>//************************** end of WindowsProject.tpl for Spanish **************
-75746>
+75604>>>>>Use cJsonHttpTransfer.pkg
+Including file: cJsonHttpTransfer.pkg    (C:\Program Files\DataFlex 24.0\Pkg\cJsonHttpTransfer.pkg)
+75604>>>>>>>// DF JSON internet transfer class definitions.
+75604>>>>>>>Use cHttpTransfer.pkg
+75604>>>>>>>Use cJsonObject.pkg
+Including file: cJsonObject.pkg    (C:\Program Files\DataFlex 24.0\Pkg\cJsonObject.pkg)
+75604>>>>>>>>>// cJSONObject is defined directly in fmac
+75604>>>>>>>>>// We just define the constants here. They have intentionally not been moved to fmac
+75604>>>>>>>>>
+75604>>>>>>>>>
+75604>>>>>>>>>Enum_List
+75604>>>>>>>>>    Define jpWhitespace_Plain for 0
+75604>>>>>>>>>    Define jpWhitespace_Spaced for 1
+75604>>>>>>>>>    Define jpWhitespace_Pretty for 2
+75604>>>>>>>>>End_Enum_List
+75604>>>>>>>>>
+75604>>>>>>>>>Enum_List
+75604>>>>>>>>>    Define jsonTypeNull
+75604>>>>>>>>>    Define jsonTypeBoolean
+75604>>>>>>>>>    Define jsonTypeDouble
+75604>>>>>>>>>    Define jsonTypeInteger
+75604>>>>>>>>>    Define jsonTypeObject
+75604>>>>>>>>>    Define jsonTypeArray
+75604>>>>>>>>>    Define jsonTypeString
+75604>>>>>>>>>End_Enum_List
+75604>>>>>>>>>
+75604>>>>>>>Use GlobalFunctionsProcedures.pkg
+75604>>>>>>>
+75604>>>>>>>// these define the three characters that define BOM for utf8.
+75604>>>>>>>// These serve no purpos and are rarely used. If used they must be removed
+75604>>>>>>>Define C_BOM1 for |CI$EF
+75604>>>>>>>Define C_BOM2 for |CI$BB
+75604>>>>>>>Define C_BOM3 for |CI$BF
+75604>>>>>>>
+75604>>>>>>>
+75604>>>>>>>
+75604>>>>>>>// define JSON transfer status codes used by peJsonTransferStatus
+75604>>>>>>>Enum_List
+75604>>>>>>>    Define jtsOk                 // ok
+75604>>>>>>>    Define jtsHttpRequestFailed  // the post/get http request returned an error
+75604>>>>>>>    Define jtsInvalidContentType // response content type not JSON
+75604>>>>>>>    Define jtsNotJson            // return value not JSON (could not load in object)
+75604>>>>>>>    Define jtsError              // unspecified return error
+75604>>>>>>>End_Enum_List
+75604>>>>>>>
+75604>>>>>>>
+75604>>>>>>>Class cJsonHttpTransfer is a cHttpTransfer
+75605>>>>>>>    
+75605>>>>>>>    Procedure Construct_Object
+75607>>>>>>>        Forward Send Construct_object
+75609>>>>>>>        
+75609>>>>>>>        Property String  psContentTypeSent "application/json; charset=utf-8"     // default content type for posted data
+75610>>>>>>>        
+75610>>>>>>>        Property Boolean pbClearHeaders      True         // should headers always be cleared after a post
+75611>>>>>>>        
+75611>>>>>>>        Property UChar[] pucDataReceived                 // maintained by object
+75612>>>>>>>        
+75612>>>>>>>        Property String  psContentTypeReceived ''         // content type received
+75613>>>>>>>        
+75613>>>>>>>        Property String  psJsonParseError ''              // Set if response JSON can't be parsed
+75614>>>>>>>        
+75614>>>>>>>        Property String  psContentTypeExpected 'application/json' // content type received - expected value should be contained in here.
+75615>>>>>>>        
+75615>>>>>>>        Property Integer peJsonTransferStatus jtsOk
+75616>>>>>>>        
+75616>>>>>>>        // if true, the http post does not happend and whatever was posted is just returned as a copy.
+75616>>>>>>>        // Good for internal Testing
+75616>>>>>>>        Property Boolean pbPostLoopTest False
+75617>>>>>>>        
+75617>>>>>>>        Set piBufferSize to -1  //  No chunking needed
+75618>>>>>>>    End_Procedure
+75619>>>>>>>    
+75619>>>>>>>    // private helper function. Convert data passed by pointer to an JSON document.
+75619>>>>>>>    // return 0, if error
+75619>>>>>>>    //
+75619>>>>>>>    Function UCharDatatoJson UChar[] ucJson Returns Handle
+75621>>>>>>>        Integer iVoid bOk
+75621>>>>>>>        Handle hoJson
+75621>>>>>>>        String sError
+75621>>>>>>>        Get Create of Desktop (RefClass(cJsonObject)) to hoJson
+75622>>>>>>>        Get ParseUTF8 of hoJson ucJson to bOk
+75623>>>>>>>        If not bOk Begin
+75625>>>>>>>            // store the JSON parse error info
+75625>>>>>>>            Get psParseError of hoJson to sError
+75626>>>>>>>            Set psJsonParseError to sError
+75627>>>>>>>            Send Destroy of hoJson
+75628>>>>>>>            Move 0 to hoJson
+75629>>>>>>>        End
+75629>>>>>>>>
+75629>>>>>>>        Function_Return hoJson
+75630>>>>>>>    End_Function
+75631>>>>>>>    
+75631>>>>>>>    // Clear pucDataReceived
+75631>>>>>>>    Procedure ClearDataReceived
+75633>>>>>>>        UChar[] ucEmpty
+75634>>>>>>>        
+75634>>>>>>>        Set pucDataReceived to ucEmpty
+75635>>>>>>>        Set psJsonParseError to ''
+75636>>>>>>>    End_Procedure
+75637>>>>>>>    
+75637>>>>>>>    // augment to release any memor
+75637>>>>>>>    Procedure Destroy_Object
+75639>>>>>>>        Send ClearDataReceived
+75640>>>>>>>        Forward Send Destroy_object
+75642>>>>>>>    End_Procedure
+75643>>>>>>>    
+75643>>>>>>>    // called during http transfer. Take passed data and append to pucDataReceived.
+75643>>>>>>>    // If new transfer save contenttype.
+75643>>>>>>>    Procedure OnDataReceivedUC String sContentType UChar[] ucData
+75645>>>>>>>        UChar[] ucBuffer
+75646>>>>>>>        Integer iDataLen
+75646>>>>>>>        
+75646>>>>>>>        Move (SizeOfArray(ucData)) to iDataLen
+75647>>>>>>>        
+75647>>>>>>>        If (iDataLen > 0) Begin
+75649>>>>>>>            Get pucDataReceived to ucBuffer
+75650>>>>>>>            If (SizeOfArray(ucBuffer) > 0) Begin
+75652>>>>>>>                Set pucDataReceived to (AppendArray(ucBuffer, ucData))
+75653>>>>>>>            End
+75653>>>>>>>>
+75653>>>>>>>            Else Begin
+75654>>>>>>>                Set psContentTypeReceived to sContentType
+75655>>>>>>>                
+75655>>>>>>>                If (iDataLen > 3 and ucData[0]=C_BOM1 and ucData[1]=C_BOM2 and ucData[2]=C_BOM3) Begin
+75657>>>>>>>                    Set pucDataReceived to (CopyArray(ucData, 3, iDataLen - 1))
+75658>>>>>>>                End
+75658>>>>>>>>
+75658>>>>>>>                Else Begin
+75659>>>>>>>                    Set pucDataReceived to ucData
+75660>>>>>>>                End
+75660>>>>>>>>
+75660>>>>>>>            End
+75660>>>>>>>>
+75660>>>>>>>        End
+75660>>>>>>>>
+75660>>>>>>>    End_Procedure
+75661>>>>>>>    
+75661>>>>>>>    Function LoopDataBack UChar[] ucData Returns Boolean
+75663>>>>>>>        Pointer pInData
+75663>>>>>>>        Boolean bOk
+75663>>>>>>>        
+75663>>>>>>>        Set pucDataReceived to ucData
+75664>>>>>>>        Set psContentTypeReceived to (psContentTypeExpected(Self))
+75665>>>>>>>        
+75665>>>>>>>        Function_Return True
+75666>>>>>>>    End_Function
+75667>>>>>>>    
+75667>>>>>>>    
+75667>>>>>>>    Function HttpVerbJsonAddrExec String sHost String sFilePath Pointer pJson Integer iLen String sVerb  Returns Boolean
+75669>>>>>>>        Boolean bOk
+75669>>>>>>>        Integer iError
+75669>>>>>>>        String sContentType
+75669>>>>>>>        
+75669>>>>>>>        Send ClearDataReceived  // this should be zero, just in case it is not
+75670>>>>>>>        Set psRemoteHost to sHost
+75671>>>>>>>        
+75671>>>>>>>        Get psContentTypeSent to sContentType
+75672>>>>>>>        If (iLen > 0 and sContentType <> "") Begin
+75674>>>>>>>            Get AddHeader "Content-Type" sContentType to bok
+75675>>>>>>>        End
+75675>>>>>>>>
+75675>>>>>>>        Get HttpVerbAddrRequest sFilePath pJson iLen False sVerb to bOK
+75676>>>>>>>        
+75676>>>>>>>        // You need to clear headers between posts. If you need to set custom headers you should
+75676>>>>>>>        // set pbClearHeaders to false and then manually send ClearHeaders and AddHeaders in your code
+75676>>>>>>>        If (pbClearHeaders(Self)) ;            Send ClearHeaders
+75679>>>>>>>        
+75679>>>>>>>        
+75679>>>>>>>        Function_Return bOk
+75680>>>>>>>    End_Function
+75681>>>>>>>    
+75681>>>>>>>    // We assume but do not verify that the data in ucJson is actually UTF8 JSON
+75681>>>>>>>    Function HttpVerbJsonUChar String sHost String sFilePath UChar[] ucJson String sVerb Returns UChar[]
+75683>>>>>>>        Integer iLen
+75683>>>>>>>        Boolean bOk
+75683>>>>>>>        UChar[] ucJsonReceived
+75684>>>>>>>        String sContentTypeReceived sContentTypeExpected
+75684>>>>>>>        
+75684>>>>>>>        Move (SizeOfArray(ucJson)) to iLen
+75685>>>>>>>        
+75685>>>>>>>        If (pbPostLoopTest(Self)) Begin
+75687>>>>>>>            Get LoopDataBack ucJson to bOk
+75688>>>>>>>        End
+75688>>>>>>>>
+75688>>>>>>>        Else Begin
+75689>>>>>>>            Get HttpVerbJsonAddrExec sHost sFilePath (AddressOf(ucJson)) iLen sVerb to bOk
+75690>>>>>>>        End
+75690>>>>>>>>
+75690>>>>>>>                
+75690>>>>>>>        If bOk Begin
+75692>>>>>>>            Set peJsonTransferStatus to jtsOk
+75693>>>>>>>            Get pucDataReceived to ucJsonReceived
+75694>>>>>>>            
+75694>>>>>>>            If (SizeOfArray(ucJsonReceived) > 0) Begin
+75696>>>>>>>                // we have data, check that the content type is ok. This is as far
+75696>>>>>>>                // as we can go here.
+75696>>>>>>>                Get psContentTypeReceived to sContentTypeReceived
+75697>>>>>>>                Get psContentTypeExpected to sContentTypeExpected
+75698>>>>>>>                // If contentType expected is empty, we allow anything
+75698>>>>>>>                If (sContentTypeExpected<>"" and pos(lowercase(sContentTypeExpected),lowercase(sContentTypeReceived))=0) Begin
+75700>>>>>>>                    Set peJsonTransferStatus to jtsInvalidContentType
+75701>>>>>>>                End
+75701>>>>>>>>
+75701>>>>>>>            End
+75701>>>>>>>>
+75701>>>>>>>        End
+75701>>>>>>>>
+75701>>>>>>>        Else Begin
+75702>>>>>>>            Set peJsonTransferStatus to jtsHttpRequestFailed
+75703>>>>>>>        End
+75703>>>>>>>>
+75703>>>>>>>                
+75703>>>>>>>        Function_Return ucJsonReceived
+75704>>>>>>>    End_Function
+75705>>>>>>>    
+75705>>>>>>>    // Generic HTTP Request - it is passed the Verb. Used by all other http requests
+75705>>>>>>>    Function HttpVerbJson  String sHost String sFilePath Handle  hoJsonRequest String sVerb Boolean ByRef bOk Returns Handle
+75707>>>>>>>        UChar[] ucJsonRequest ucJsonResponse
+75709>>>>>>>        Handle hoJsonResponse
+75709>>>>>>>        Integer eStat
+75709>>>>>>>        
+75709>>>>>>>        If (hoJsonRequest<>0) Begin
+75711>>>>>>>            Get StringifyUTF8 of hoJsonRequest to ucJsonRequest
+75712>>>>>>>        End
+75712>>>>>>>>
+75712>>>>>>>        
+75712>>>>>>>        Get HttpVerbJsonUChar sHost sFilePath ucJsonRequest sVerb to ucJsonResponse
+75713>>>>>>>        
+75713>>>>>>>        If (SizeOfArray(ucJsonResponse)) Begin
+75715>>>>>>>            Get UCharDatatoJson ucJsonResponse to hoJsonResponse
+75716>>>>>>>            If (hoJsonResponse=0) Begin
+75718>>>>>>>                // this indicates that data was returned but it could not be loaded as Json
+75718>>>>>>>                Set peJsonTransferStatus to jtsNotJson
+75719>>>>>>>                // note bad data is still is ppDataReceived (might be useful for debugging)
+75719>>>>>>>            End
+75719>>>>>>>>
+75719>>>>>>>        End
+75719>>>>>>>>
+75719>>>>>>>        
+75719>>>>>>>        // return Ok status by reference
+75719>>>>>>>        Get peJsonTransferStatus to eStat
+75720>>>>>>>        Move (eStat=jtsOk) to bOk
+75721>>>>>>>        
+75721>>>>>>>        Function_Return hoJsonResponse
+75722>>>>>>>    End_Function
+75723>>>>>>>    
+75723>>>>>>>    Function HttpPostJson String sHost String sFilePath Handle hoJsonRequest Boolean ByRef bOk Returns Handle
+75725>>>>>>>        Handle hoJson
+75725>>>>>>>        Get HttpVerbJson sHost sFilePath hoJsonRequest "POST" (&bOk) to hoJson
+75726>>>>>>>        Function_Return hoJson
+75727>>>>>>>    End_Function
+75728>>>>>>>    
+75728>>>>>>>    Function HttpGetJson String sHost String sFilePath Boolean ByRef bOk Returns Handle
+75730>>>>>>>        Pointer pJson
+75730>>>>>>>        Integer iVoid iLen
+75730>>>>>>>        Handle hoJson
+75730>>>>>>>        Get HttpVerbJson sHost sFilePath 0 "GET" (&bOk) to hoJson
+75731>>>>>>>        Function_Return hoJson
+75732>>>>>>>    End_Function
+75733>>>>>>>    
+75733>>>>>>>    Function HttpPutJson String sHost String sFilePath Handle hoJsonRequest Boolean ByRef bOk Returns Handle
+75735>>>>>>>        Handle hoJson
+75735>>>>>>>        Get HttpVerbJson sHost sFilePath hoJsonRequest "PUT" (&bOk) to hoJson
+75736>>>>>>>        Function_Return hoJson
+75737>>>>>>>    End_Function
+75738>>>>>>>    
+75738>>>>>>>    Function HttpDeleteJson String sHost String sFilePath Handle hoJsonRequest Boolean ByRef bOk Returns Handle
+75740>>>>>>>        Handle hoJson
+75740>>>>>>>        Get HttpVerbJson sHost sFilePath hoJsonRequest "DELETE" (&bOk) to hoJson
+75741>>>>>>>        Function_Return hoJson
+75742>>>>>>>    End_Function
+75743>>>>>>>    
+75743>>>>>>>    Function HttpPatchJson  String sHost String sFilePath Handle hoJsonRequest Boolean ByRef bOk Returns Handle
+75745>>>>>>>        Handle hoJson
+75745>>>>>>>        Get HttpVerbJson sHost sFilePath hoJsonRequest "PATCH" (&bOk) to hoJson
+75746>>>>>>>        Function_Return hoJson
+75747>>>>>>>    End_Function
+75748>>>>>>>    
+75748>>>>>>>    // After an Json xfer request this message can be sent to display an error message if one occurred.
+75748>>>>>>>    // Normally you would first check peJsonTransferStatus to see if it is not jtsOk. If not, send
+75748>>>>>>>    // LastError to see the error
+75748>>>>>>>    
+75748>>>>>>>    // return last JSON transfer error text
+75748>>>>>>>    Function TransferErrorDescription Returns String
+75750>>>>>>>        String  sError sJsonError
+75750>>>>>>>        Integer eJsonTransferStatus
+75750>>>>>>>        Get peJsonTransferStatus to eJsonTransferStatus
+75751>>>>>>>        Get psJsonParseError to sJsonError
+75752>>>>>>>        Case Begin
+75752>>>>>>>            Case (eJsonTransferStatus=jtsOk) ;                Move '' to sError
+75755>>>>>>>            Case (eJsonTransferStatus=jtsHttpRequestFailed) ;                Move C_$HttpRequestFailed to sError
+75759>>>>>>>            Case (eJsonTransferStatus=jtsInvalidContentType) ;                Move (SFormat(C_$InvalidContentTypeReceived,psContentTypeReceived(Self))) to sError
+75763>>>>>>>            Case (eJsonTransferStatus=jtsNotJson) ;                Move (C_$ReceivedDataNotInJsonFormat * sJsonError) to sError
+75767>>>>>>>            Case Else ;                Move C_$ReceivedDataIsBad to sError
+75769>>>>>>>        Case End
+75769>>>>>>>        Function_Return sError
+75770>>>>>>>    End_Function
+75771>>>>>>>    
+75771>>>>>>>    // can be send to raise an error.
+75771>>>>>>>    Procedure LastError
+75773>>>>>>>        Integer eJsonTransferStatus
+75773>>>>>>>        String sError
+75773>>>>>>>        
+75773>>>>>>>        Get peJsonTransferStatus to eJsonTransferStatus
+75774>>>>>>>        If (eJsonTransferStatus<>jtsOk) Begin
+75776>>>>>>>            Get TransferErrorDescription to sError
+75777>>>>>>>            Error DFERR_JSON_HTTP sError
+75778>>>>>>>>
+75778>>>>>>>        End
+75778>>>>>>>>
+75778>>>>>>>    End_Procedure
+75779>>>>>>>    
+75779>>>>>>>    
+75779>>>>>>>End_Class
+75780>>>>>
+75780>>>>>Function ValidacionCorreo String sCorreo Returns Boolean
+75783>>>>>    
+75783>>>>>    Boolean bRet
+75783>>>>>
+75783>>>>>    // Comprobamos que se haya introducido algun valor
+75783>>>>>    If (Length(sCorreo) = 0) Begin
+75785>>>>>        Send Info_Box "No se ha ingresado correo electronico" "Error"
+75786>>>>>        Function_Return False
+75787>>>>>    End
+75787>>>>>>
+75787>>>>>    
+75787>>>>>    If (Length(sCorreo) > 256 and (not(Length(sCorreo) = 0))) Begin
+75789>>>>>        Send Info_Box "El correo electronico introducido tiene mas de 256 caracteres" "Error"
+75790>>>>>        Function_Return False
+75791>>>>>    End 
+75791>>>>>>
+75791>>>>>    
+75791>>>>>    //Validacion propia
+75791>>>>>    Get IsEmail sCorreo to bRet
+75792>>>>>    If (not(bRet)) Begin
+75794>>>>>        Send Info_Box "El correo no tiene un formato correcto segun la funcion propia" "Error"
+75795>>>>>    End
+75795>>>>>>
+75795>>>>>    Else Begin
+75796>>>>>        Send Info_Box "El correo tiene un formato correcto segun la funcion propia" ""
+75797>>>>>    End
+75797>>>>>>
+75797>>>>>    
+75797>>>>>    Get validacionAPI sCorreo to bRet
+75798>>>>>    If (not(bRet)) Begin
+75800>>>>>        Send Info_Box "El correo no es valido segun la API de neutrino" "Error"
+75801>>>>>    End
+75801>>>>>>
+75801>>>>>    Else Begin
+75802>>>>>        Send Info_Box "El correo es valido segun la API de neutrino" ""
+75803>>>>>    End
+75803>>>>>>
+75803>>>>>    
+75803>>>>>    Function_Return bRet
+75804>>>>>End_Function
+75805>>>>>
+75805>>>>>
+75805>>>>>
+75805>>>>>
+75805>>>>>// Funcion que comprueba los distintos requisitos del formato de un correo electronico
+75805>>>>>Function IsEmail String sCorreo Returns Boolean
+75808>>>>>    
+75808>>>>>    Integer iCount iCountAux iLengthString
+75808>>>>>    String sCaracter
+75808>>>>>    Boolean bRet
+75808>>>>>    
+75808>>>>>    Move (Length(sCorreo)) to iLengthString
+75809>>>>>    //Comprobamos que el primer caracter no sea un simbolo valido en vez de numero o letra
+75809>>>>>    If ((Left(sCorreo, 1) = ".") or (Left(sCorreo, 1) = "-") or (Left(sCorreo, 1) = "_") or (Left(sCorreo, 1) = "@")) Begin
+75811>>>>>         Send Info_Box "El correo no puede comenzar por un simbolo" "Error"
+75812>>>>>        Function_Return False
+75813>>>>>    End
+75813>>>>>>
+75813>>>>>    
+75813>>>>>    For iCount from 1 to (iLengthString)
+75819>>>>>>
+75819>>>>>        Move (Mid(sCorreo,1,iCount)) to sCaracter
+75820>>>>>        
+75820>>>>>        // Comprobamos que el caracter no sea un simbolo prohibido
+75820>>>>>        Get ComprobarSimbolos sCaracter to bRet
+75821>>>>>        If (bRet) Begin
+75823>>>>>             Send Info_Box "Se ha ingresado un simbolo no permitido (simbolos permitidos . - _)" "Error"
+75824>>>>>            Function_Return False
+75825>>>>>        End
+75825>>>>>>
+75825>>>>>        
+75825>>>>>        // Comprobamos que no haya 2 puntos juntos
+75825>>>>>        If ((sCaracter = ".") and (Mid(sCorreo,1,iCount+1) = ".")) Begin
+75827>>>>>             Send Info_Box "El correo no puede contener dos puntos seguidos" "Error"
+75828>>>>>            Function_Return False
+75829>>>>>        End
+75829>>>>>>
+75829>>>>>        
+75829>>>>>        // Comprobamos que antes de la @ haya un minimo de caracteres y un maximo
+75829>>>>>        If ((sCaracter = "@") and (iCount > 1) and (iCount < 66)) Begin
+75831>>>>>            Move (iCountAux+1) to iCountAux
+75832>>>>>        End
+75832>>>>>>
+75832>>>>>        
+75832>>>>>        // Comprobamos si (desde la derecha) la 3, 4 o 5 posicion es un .
+75832>>>>>        If (not((Mid(sCorreo,1,iLengthString-2) = ".") or (Mid(sCorreo,1,iLengthString-3) = ".") or (Mid(sCorreo,1,iLengthString-4) = "."))) Begin
+75834>>>>>            Send Info_Box "Tras el '.' de dominio, solo se podran escribir entre 2 y 4 caracteres" "Error"
+75835>>>>>            Function_Return False
+75836>>>>>        End
+75836>>>>>>
+75836>>>>>    Loop
+75837>>>>>>
+75837>>>>>    
+75837>>>>>    // Comprobamos que solo haya una @ en el correo
+75837>>>>>    If (iCountAux = 1) Begin
+75839>>>>>        Function_Return True
+75840>>>>>    End 
+75840>>>>>>
+75840>>>>>    Else If (iCountAux > 1) Begin 
+75843>>>>>         Send Info_Box "No puede introducir 2 '@'" "Error"
+75844>>>>>    End
+75844>>>>>>
+75844>>>>>    
+75844>>>>>End_Function
+75845>>>>>
+75845>>>>>// Comprobador de simbolos permitidos
+75845>>>>>Function ComprobarSimbolos String sCaracter Returns Boolean
+75848>>>>>    Integer iCount
+75848>>>>>    String sSimbolosProhibidos
+75848>>>>>    
+75848>>>>>    For iCount from 1 to (Length(cSimbolos))
+75854>>>>>>
+75854>>>>>        Move (Mid(cSimbolos,1,iCount)) to sSimbolosProhibidos
+75855>>>>>        If (sCaracter = sSimbolosProhibidos) Begin
+75857>>>>>            Function_Return True
+75858>>>>>        End
+75858>>>>>>
+75858>>>>>    Loop
+75859>>>>>>
+75859>>>>>End_Function
+75860>>>>>
+75860>>>>>// FUNCION PARA CONSUMIR API NEUTRINO
+75860>>>>>
+75860>>>>>Function validacionAPI String sEmail Returns Boolean
+75863>>>>>    Handle hoHttp hoJsonRequest hoResponse
+75863>>>>>    Boolean bRet bIsnull
+75863>>>>>    String sResponse
+75863>>>>>    
+75863>>>>>    // https://www.neutrinoapi.com/api/email-validate/
+75863>>>>>    
+75863>>>>>    Get Create (RefClass(cJsonHttpTransfer)) to hoHttp
+75864>>>>>    Get Create (RefClass(cJsonObject))       to hoJsonRequest
+75865>>>>>    
+75865>>>>>    Send InitializeJsonType of hoJsonRequest jsonTypeObject
+75866>>>>>    
+75866>>>>>    Send SetMemberValue of hoJsonRequest "email"        jsonTypeString  sEmail
+75867>>>>>    Send SetMemberValue of hoJsonRequest "fix-typos"    jsonTypeBoolean False
+75868>>>>>    
+75868>>>>>    Get AddHeader of hoHttp "User-ID" "Jaime1346" to bRet
+75869>>>>>    Get AddHeader of hoHttp "API-Key" "5jiDCPbsFp2LBaN3p9F2uXc4KvrrT3ZizN5ac1Rrfjc9cVj6" to bRet
+75870>>>>>    
+75870>>>>>    Get HttpPostJson of hoHttp "neutrinoapi.net" "/email-validate" hoJsonRequest (&bRet) to hoResponse
+75871>>>>>    
+75871>>>>>    
+75871>>>>>    If (bRet and (ResponseStatusCode(hoHttp) = 200)) Begin
+75873>>>>>        Send Info_Box (Stringify(hoResponse)) "Respuesta de la API"
+75874>>>>>        If (HasMember(hoResponse,"valid")) Begin
+75876>>>>>            Get IsMemberOfJsonType of hoResponse "valid" jsonTypeNull to bIsnull
+75877>>>>>            If (bIsnull) Begin
+75879>>>>>                Function_Return False
+75880>>>>>            End
+75880>>>>>>
+75880>>>>>            Else Begin
+75881>>>>>                Get MemberValue of hoResponse "valid" to sResponse
+75882>>>>>                If (sResponse = "1") Begin
+75884>>>>>                End
+75884>>>>>>
+75884>>>>>                Else Begin
+75885>>>>>                    Function_Return False
+75886>>>>>                End
+75886>>>>>>
+75886>>>>>            End
+75886>>>>>>
+75886>>>>>        End
+75886>>>>>>
+75886>>>>>        If (HasMember(hoResponse,"is-disposable")) Begin
+75888>>>>>            Get IsMemberOfJsonType of hoResponse "is-disposable" jsonTypeNull to bIsnull
+75889>>>>>            If (bIsnull) Begin
+75891>>>>>                Function_Return False
+75892>>>>>            End
+75892>>>>>>
+75892>>>>>            Else Begin
+75893>>>>>                Get MemberValue of hoResponse "is-disposable" to sResponse
+75894>>>>>                If (sResponse = "0") Begin
+75896>>>>>                    Send Info_Box "El correo no es temporal" ""
+75897>>>>>                    Function_Return True
+75898>>>>>                End
+75898>>>>>>
+75898>>>>>                Else Begin
+75899>>>>>                    Send Info_Box "El correo es temporal" "Error"
+75900>>>>>                    Function_Return False
+75901>>>>>                End
+75901>>>>>>
+75901>>>>>            End
+75901>>>>>>
+75901>>>>>        End
+75901>>>>>>
+75901>>>>>        
+75901>>>>>    End
+75901>>>>>>
+75901>>>>>    
+75901>>>>>    
+75901>>>>>    
+75901>>>>>End_Function
+75902>>>
+75902>>>Deferred_View Activate_oValidadorCorreo for ;Object oValidadorCorreo is a dbView
+75927>>>
+75927>>>    Set Border_Style to Border_Thick
+75928>>>    Set Size to 200 300
+75929>>>    Set Location to 2 2
+75930>>>    Set Label to "ValidadorCorreo"
+75931>>>
+75931>>>    Object oForm1 is a Form
+75933>>>        Set Size to 12 224
+75934>>>        Set Location to 43 7
+75935>>>        Set psPlaceHolder to "Introduzca el correo electronico a validar"
+75936>>>        // OnChange is called on every changed character
+75936>>>    //    Procedure OnChange
+75936>>>    //        String sValue
+75936>>>    //    
+75936>>>    //        Get Value to sValue
+75936>>>    //    End_Procedure
+75936>>>    
+75936>>>    End_Object
+75937>>>
+75937>>>    Object oButton1 is a Button
+75939>>>        Set Location to 42 237
+75940>>>        Set Label to 'Validar'
+75941>>>    
+75941>>>        // fires when the button is clicked
+75941>>>        Procedure OnClick
+75944>>>            String sValue
+75944>>>            Boolean  bRet
+75944>>>            
+75944>>>            Get Value of oForm1 to sValue
+75945>>>            Get ValidacionCorreo sValue to bRet
+75946>>>            
+75946>>>            Set Label of oTextBox1 to ("Correo electronico: " + sValue)
+75947>>>            If (bRet) Begin
+75949>>>                Set Color of oTextBox1 to clGreen
+75950>>>            End
+75950>>>>
+75950>>>            Else Begin 
+75951>>>                Set Color of oTextBox1 to clRed
+75952>>>            End
+75952>>>>
+75952>>>        End_Procedure
+75953>>>    
+75953>>>    End_Object
+75954>>>
+75954>>>    Object oTextBox1 is a TextBox
+75956>>>        Set Size to 10 34
+75957>>>        Set Location to 92 10
+75958>>>        Set Label to 'Correo electronico: '
+75959>>>    End_Object
+75960>>>
+75960>>>Cd_End_Object
+75962>>>>
+75962>
+75962>        Procedure Activate_About
+75965>            Send DoAbout "" "" "" "" ""
+75966>        End_Procedure
+75967>
+75967>    End_Object
+75968>
+75968>End_Object
+75969>
+75969>Start_UI
+75970>
+75970>//************************** end of WindowsProject.tpl for Spanish **************
+75970>
 Summary
-Memory Available: 51480875008
+Memory Available: 51147436032
 Total Warnings : 0
 Total Errors   : 0
-Total Symbols  : 43859
+Total Symbols  : 44012
 Total Resources: 0
-Total Commands : 75745
+Total Commands : 75969
 Total Windows  : 0
 Total Pages    : 0
-Static Data    : 540314
-Message area   : 525306
-Total Blocks   : 28501
+Static Data    : 542886
+Message area   : 527081
+Total Blocks   : 28595

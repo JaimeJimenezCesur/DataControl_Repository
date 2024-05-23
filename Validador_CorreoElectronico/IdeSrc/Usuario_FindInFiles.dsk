@@ -4,10 +4,10 @@ Active=0
 SubDirectories=1
 WholeWordOnly=0
 SearchWhere=0
-Location=C:\Users\Usuario\Desktop\Trabajo Jaime\Trabajos\Validador_CorreoElectronico\IdeSrc\Usuario_FindInFiles.dsk
-[C:\Users\Usuario\Desktop\Trabajo Jaime\Trabajos\Validador_CorreoElectronico\AppSrc]
+Location=C:\Users\Usuario\Documents\GitHub\DataControl_Repository\Validador_CorreoElectronico\IdeSrc\Usuario_FindInFiles.dsk
+[C:\Users\Usuario\Documents\GitHub\DataControl_Repository\Validador_CorreoElectronico\AppSrc]
 IsEnabled=1
-[C:\Users\Usuario\Desktop\Trabajo Jaime\Trabajos\Validador_CorreoElectronico\DDSrc]
+[C:\Users\Usuario\Documents\GitHub\DataControl_Repository\Validador_CorreoElectronico\DDSrc]
 IsEnabled=1
-[C:\Users\Usuario\Desktop\Trabajo Jaime\Trabajos\Validador_CorreoElectronico\AppHtml]
+[C:\Users\Usuario\Documents\GitHub\DataControl_Repository\Validador_CorreoElectronico\AppHtml]
 IsEnabled=1

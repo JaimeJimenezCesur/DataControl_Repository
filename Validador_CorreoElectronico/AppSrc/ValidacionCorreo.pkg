@@ -1,5 +1,7 @@
 ﻿Define cSimbolos for "!#$%&'*/\=?^+, `{|}~[]"
 
+Use cJsonHttpTransfer.pkg
+
 Function ValidacionCorreo String sCorreo Returns Boolean
     
     Boolean bRet
@@ -15,14 +17,23 @@ Function ValidacionCorreo String sCorreo Returns Boolean
         Function_Return False
     End 
     
+    //Validacion propia
     Get IsEmail sCorreo to bRet
     If (not(bRet)) Begin
-        Send Info_Box "El correo no tiene un formato correcto" "Error"
+        Send Info_Box "El correo no tiene un formato correcto segun la funcion propia" "Error"
     End
     Else Begin
-        Send Info_Box "El correo tiene un formato correcto" ""
+        Send Info_Box "El correo tiene un formato correcto segun la funcion propia" ""
     End
-
+    
+    Get validacionAPI sCorreo to bRet
+    If (not(bRet)) Begin
+        Send Info_Box "El correo no es valido segun la API de neutrino" "Error"
+    End
+    Else Begin
+        Send Info_Box "El correo es valido segun la API de neutrino" ""
+    End
+    
     Function_Return bRet
 End_Function
 
@@ -92,4 +103,67 @@ Function ComprobarSimbolos String sCaracter Returns Boolean
             Function_Return True
         End
     Loop
+End_Function
+
+// FUNCION PARA CONSUMIR API NEUTRINO
+
+Function validacionAPI String sEmail Returns Boolean
+    Handle hoHttp hoJsonRequest hoResponse
+    Boolean bRet bIsnull
+    String sResponse
+    
+    // https://www.neutrinoapi.com/api/email-validate/
+    
+    Get Create (RefClass(cJsonHttpTransfer)) to hoHttp
+    Get Create (RefClass(cJsonObject))       to hoJsonRequest
+    
+    Send InitializeJsonType of hoJsonRequest jsonTypeObject
+    
+    Send SetMemberValue of hoJsonRequest "email"        jsonTypeString  sEmail
+    Send SetMemberValue of hoJsonRequest "fix-typos"    jsonTypeBoolean False
+    
+    Get AddHeader of hoHttp "User-ID" "Jaime1346" to bRet
+    Get AddHeader of hoHttp "API-Key" "5jiDCPbsFp2LBaN3p9F2uXc4KvrrT3ZizN5ac1Rrfjc9cVj6" to bRet
+    
+    Get HttpPostJson of hoHttp "neutrinoapi.net" "/email-validate" hoJsonRequest (&bRet) to hoResponse
+    
+    
+    If (bRet and (ResponseStatusCode(hoHttp) = 200)) Begin
+        Send Info_Box (Stringify(hoResponse)) "Respuesta de la API"
+        If (HasMember(hoResponse,"valid")) Begin
+            Get IsMemberOfJsonType of hoResponse "valid" jsonTypeNull to bIsnull
+            If (bIsnull) Begin
+                Function_Return False
+            End
+            Else Begin
+                Get MemberValue of hoResponse "valid" to sResponse
+                If (sResponse = "1") Begin
+                End
+                Else Begin
+                    Function_Return False
+                End
+            End
+        End
+        If (HasMember(hoResponse,"is-disposable")) Begin
+            Get IsMemberOfJsonType of hoResponse "is-disposable" jsonTypeNull to bIsnull
+            If (bIsnull) Begin
+                Function_Return False
+            End
+            Else Begin
+                Get MemberValue of hoResponse "is-disposable" to sResponse
+                If (sResponse = "0") Begin
+                    Send Info_Box "El correo no es temporal" ""
+                    Function_Return True
+                End
+                Else Begin
+                    Send Info_Box "El correo es temporal" "Error"
+                    Function_Return False
+                End
+            End
+        End
+        
+    End
+    
+    
+    
 End_Function
