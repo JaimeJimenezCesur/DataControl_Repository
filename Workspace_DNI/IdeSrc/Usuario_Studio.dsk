@@ -1,0 +1,50 @@
+[Workspace]
+CurrentProject=DNI_Project.src
+Location=C:\Users\Usuario\Desktop\Trabajo Jaime\Workspace_DNI\IdeSrc\Usuario_Studio.dsk
+CreateNew=-1
+[TabWindows]
+GroupCount=1
+HorizontalGroups=1
+[TabGroup0]
+GroupSize=40
+SelectedTab=3
+[Window0]
+Filename=Workspace Dashboard
+ViewType=101
+Top=21
+Left=0
+Bottom=726
+Right=1428
+TabIndex=0
+TabGroup=0
+[Window1]
+Filename=C:\Users\Usuario\Desktop\Trabajo Jaime\Workspace_DNI\AppSrc\DNI_Project.src
+ViewType=2
+Top=21
+Left=0
+Bottom=726
+Right=1428
+TabIndex=1
+TabGroup=0
+[Window2]
+Filename=C:\Users\Usuario\Desktop\Trabajo Jaime\Workspace_DNI\AppSrc\ValidacionDNI.vw
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1428
+CursorLine=3
+CursorColumn=0
+TabIndex=2
+TabGroup=0
+[Window3]
+Filename=C:\Users\Usuario\Desktop\Trabajo Jaime\Workspace_DNI\AppSrc\ValidarDNI.pkg
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1428
+CursorLine=31
+CursorColumn=7
+TabIndex=3
+TabGroup=0

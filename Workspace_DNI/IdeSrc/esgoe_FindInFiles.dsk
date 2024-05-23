@@ -1,0 +1,13 @@
+[Header]
+Mask=*.src;*.vw;*.sl;*.dg;*.rv;*.bp;*.pkg;*.wo;*.dd;*.inc;*.tpl;*.dfo;*.asp;*.asa;*.html;*.css;*.js
+Active=0
+SubDirectories=1
+WholeWordOnly=0
+SearchWhere=0
+Location=C:\Users\esgoe\Desktop\Trabajo Jaime\Workspace_DNI\IdeSrc\esgoe_FindInFiles.dsk
+[C:\Users\esgoe\Desktop\Trabajo Jaime\Workspace_DNI\AppSrc]
+IsEnabled=1
+[C:\Users\esgoe\Desktop\Trabajo Jaime\Workspace_DNI\DDSrc]
+IsEnabled=1
+[C:\Users\esgoe\Desktop\Trabajo Jaime\Workspace_DNI\AppHtml]
+IsEnabled=1

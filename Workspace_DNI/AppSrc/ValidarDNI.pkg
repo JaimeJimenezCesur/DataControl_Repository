@@ -1,0 +1,126 @@
+﻿Define cLetter for "TRWAGMYFPDXBNJZSQVHLCKE"
+Define cNumeric for "0123456789"
+
+
+Function ValidarDNI String sDNI Returns Boolean
+    
+    Boolean bRet
+    
+    // Hacemos que el DNI se use indistintamente como mayusculas
+    Move (Uppercase(sDNI)) to sDNI
+    
+    // Comprobamos que el DNI introducido tenga el tamanno indicado y que se haya introducido algun valor
+    If (Length(sDNI) = 0) Begin
+        Send Info_Box "No se ha ingresado DNI" "Error"
+        Function_Return False
+    End
+    If (Length(sDNI) <> 9 and (not(Length(sDNI) = 0))) Begin
+        Send Info_Box "El DNI introducido no tiene 9 caracteres" "Error"
+        Function_Return False
+    End
+    
+    // Comprobamos que el documento introducido termine en una letra
+    Get IsLastChar sDNI to bRet
+    If (not(bRet)) Begin
+        Send Info_Box "El documento debe acabar con una letra valida" "Error"
+        Function_Return False
+    End
+    
+    
+    
+    // Condicional para asegurarse de que sea letra o numero
+    If ((Left(sDNI, 1) = "X") or (Left(sDNI, 1) = "X") or (Left(sDNI, 1) = "X")) Begin
+        If (Left(sDNI, 1) = "X") Begin
+            Move (("0") + Right(sDNI,8)) to sDNI
+        End
+        If (Left(sDNI, 1) = "Y") Begin
+            Move (("1") + Right(sDNI,8)) to sDNI
+        End
+        If (Left(sDNI, 1) = "Z") Begin
+            Move (("2") + Right(sDNI,8)) to sDNI
+        End
+        
+        // Comprobamos que el documento introducido termine en una letra
+        
+        If (not(bRet)) Begin
+            Send Info_Box "El documento debe contener una letra, 7 digitos y una letra" "Error"
+            Function_Return False
+        End
+        
+        // Comprobamos que tengamos los digitos necesarios
+        Get AreNumbers sDNI to bRet
+    End
+    Else Begin
+        // Comprobamos que tengamos los digitos necesarios
+        Get AreNumbers sDNI to bRet
+        // Comprobamos que el documento introducido termine en una letra
+        If (not(bRet)) Begin
+            Send Info_Box "El documento debe contener 8 digitos y una letra" "Error"
+            Function_Return False
+        End
+    End
+    
+
+    
+    Get IsDNI sDNI to bRet
+
+    Function_Return bRet
+End_Function
+
+
+// Funcion para comprobar DNI
+Function IsDNI String sDNI Returns Boolean
+    
+    Send Info_Box sDNI "DNI introducido"
+    String  sLetter 
+    Integer iDigitos iResto
+    
+    Move (Left(sDNI,8)) to iDigitos
+    Move (Mod(iDigitos,23)) to iResto
+    Move (Mid(cLetter,1,(iResto+1))) to sLetter
+    
+    If (Right(sDNI, 1) = sLetter) Begin
+        Function_Return True
+    End
+    Else Begin
+        Function_Return False
+    End
+End_Function
+
+// Funcion que comprueba si el ultimo caracter es una letra valida
+Function IsLastChar String sDNI Returns Boolean
+    Integer iCount
+    String sLetra sPosiblesLetras
+    
+    Move (Uppercase(Right(sDNI,1))) to sLetra
+    For iCount from 1 to (Length(cLetter))
+        Move (Mid(cLetter,1,iCount)) to sPosiblesLetras
+        If (sLetra = sPosiblesLetras) Begin
+            Function_Return True
+        End
+    Loop
+End_Function
+
+// Funcion que comprueba que menos el ultimo, todos los caracteres son digitos (o conversion en los NIE)
+Function AreNumbers String sDNI Returns Boolean
+    Integer iCount iAuxCount
+    String sDigito sDigitosPosibles
+    Boolean bComprobador
+ 
+    For iCount from 1 to (Length(sDNI)-1)
+        
+        Move False to bComprobador
+        Move (Mid(sDNI,1,iCount)) to sDigito
+        For iAuxCount from 1 to (Length(cNumeric))
+            Move (Mid(cNumeric,1,iAuxCount)) to sDigitosPosibles
+            If (sDigito = sDigitosPosibles) Begin
+                Move True to bComprobador
+            End
+        Loop
+
+        If (not(bComprobador)) Begin
+            Function_Return False
+        End
+    Loop
+    Function_Return True
+End_Function

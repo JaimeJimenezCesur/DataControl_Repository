@@ -1,0 +1,95 @@
+﻿Define cSimbolos for "!#$%&'*/\=?^+, `{|}~[]"
+
+Function ValidacionCorreo String sCorreo Returns Boolean
+    
+    Boolean bRet
+
+    // Comprobamos que se haya introducido algun valor
+    If (Length(sCorreo) = 0) Begin
+        Send Info_Box "No se ha ingresado correo electronico" "Error"
+        Function_Return False
+    End
+    
+    If (Length(sCorreo) > 256 and (not(Length(sCorreo) = 0))) Begin
+        Send Info_Box "El correo electronico introducido tiene mas de 256 caracteres" "Error"
+        Function_Return False
+    End 
+    
+    Get IsEmail sCorreo to bRet
+    If (not(bRet)) Begin
+        Send Info_Box "El correo no tiene un formato correcto" "Error"
+    End
+    Else Begin
+        Send Info_Box "El correo tiene un formato correcto" ""
+    End
+
+    Function_Return bRet
+End_Function
+
+
+
+
+// Funcion que comprueba los distintos requisitos del formato de un correo electronico
+Function IsEmail String sCorreo Returns Boolean
+    
+    Integer iCount iCountAux iLengthString
+    String sCaracter
+    Boolean bRet
+    
+    Move (Length(sCorreo)) to iLengthString
+    //Comprobamos que el primer caracter no sea un simbolo valido en vez de numero o letra
+    If ((Left(sCorreo, 1) = ".") or (Left(sCorreo, 1) = "-") or (Left(sCorreo, 1) = "_") or (Left(sCorreo, 1) = "@")) Begin
+         Send Info_Box "El correo no puede comenzar por un simbolo" "Error"
+        Function_Return False
+    End
+    
+    For iCount from 1 to (iLengthString)
+        Move (Mid(sCorreo,1,iCount)) to sCaracter
+        
+        // Comprobamos que el caracter no sea un simbolo prohibido
+        Get ComprobarSimbolos sCaracter to bRet
+        If (bRet) Begin
+             Send Info_Box "Se ha ingresado un simbolo no permitido (simbolos permitidos . - _)" "Error"
+            Function_Return False
+        End
+        
+        // Comprobamos que no haya 2 puntos juntos
+        If ((sCaracter = ".") and (Mid(sCorreo,1,iCount+1) = ".")) Begin
+             Send Info_Box "El correo no puede contener dos puntos seguidos" "Error"
+            Function_Return False
+        End
+        
+        // Comprobamos que antes de la @ haya un minimo de caracteres y un maximo
+        If ((sCaracter = "@") and (iCount > 1) and (iCount < 66)) Begin
+            Move (iCountAux+1) to iCountAux
+        End
+        
+        // Comprobamos si (desde la derecha) la 3, 4 o 5 posicion es un .
+        If (not((Mid(sCorreo,1,iLengthString-2) = ".") or (Mid(sCorreo,1,iLengthString-3) = ".") or (Mid(sCorreo,1,iLengthString-4) = "."))) Begin
+            Send Info_Box "Tras el '.' de dominio, solo se podran escribir entre 2 y 4 caracteres" "Error"
+            Function_Return False
+        End
+    Loop
+    
+    // Comprobamos que solo haya una @ en el correo
+    If (iCountAux = 1) Begin
+        Function_Return True
+    End 
+    Else If (iCountAux > 1) Begin 
+         Send Info_Box "No puede introducir 2 '@'" "Error"
+    End
+    
+End_Function
+
+// Comprobador de simbolos permitidos
+Function ComprobarSimbolos String sCaracter Returns Boolean
+    Integer iCount
+    String sSimbolosProhibidos
+    
+    For iCount from 1 to (Length(cSimbolos))
+        Move (Mid(cSimbolos,1,iCount)) to sSimbolosProhibidos
+        If (sCaracter = sSimbolosProhibidos) Begin
+            Function_Return True
+        End
+    Loop
+End_Function
